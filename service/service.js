@@ -1,14 +1,22 @@
-//* Create a hashmap to store the session ID and the user
-const sessionIDtoUserMap = new Map();
+//* Require the JWT module
+const jwt = require("jsonwebtoken");
 
-//* Create a setter function to store ID and User into hashmap
-function setUser(id, user) {
-    sessionIDtoUserMap.set(id, user);
+//* Get the secret key
+const secret = process.env.SECRET_KEY;
+
+//* Create a setter function to create token for the User using the secret key
+function setUser(user) {
+    const payload = {
+        _id: user._id,
+        email: user.email,
+    };
+    return jwt.sign(payload, secret);
 }
 
-//* Create a getter function to fetch user from ID
-function getUser(id) {
-    return sessionIDtoUserMap.get(id);
+//* Create a getter function to verify the token with the secret key
+function getUser(token) {
+    if (!token) return null; //* Create a null check
+    return jwt.verify(token, secret);
 }
 
 module.exports = { setUser, getUser };

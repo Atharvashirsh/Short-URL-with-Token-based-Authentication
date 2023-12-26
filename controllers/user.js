@@ -1,6 +1,3 @@
-//* Require the UUID Module (uuidv4 is an alias givent to v4)
-const { v4: uuidv4 } = require("uuid");
-
 //* Require the USER Database
 const USER = require("../models/user");
 
@@ -28,9 +25,8 @@ async function userLogin(req, res) {
         return res.render("login", { error: "Invalid Username or password" });
     }
 
-    const sessionID = uuidv4();
-    setUser(sessionID, user);
-    res.cookie("uid", sessionID);
+    const token = setUser(user);
+    res.cookie("uid", token);
     return res.redirect("/");
 }
 

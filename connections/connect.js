@@ -5,7 +5,7 @@ require("dotenv").config({ path: `../config.env` });
 const mongoose = require("mongoose");
 
 //* Use the MongoDB URI to connect to the cloud database
-const uri = process.env.URI;
+const uri = process.env.MONGO_URI;
 
 //* Create an async connection function
 const connectDB = async () => {
