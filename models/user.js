@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        role: {
+            type: String,
+            required: true,
+            default: "NORMAL",
+        },
     },
     //* Stores the time stamps of the data entry
     { timestamps: true }

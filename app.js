@@ -5,7 +5,7 @@ require("dotenv").config({ path: "./config.env" });
 const path = require("path");
 
 //* Set the PORT value from the .env file
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8001;
 
 //* Require the express module and Create the express application
 const express = require("express");
@@ -15,7 +15,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 
 //* Require the authentication middleware
-const { restrictToLoggedInUserOnly, checkAuth } = require("./middleware/auth");
+const { checkForAuthentication, restrictTo } = require("./middleware/auth");
 
 //* Use the JSON parser to parse the JSON data as well as the Form data
 app.use(express.json());
@@ -27,6 +27,9 @@ app.use(cookieParser());
 //* App configuration to set the public folder
 app.use(express.static(path.join(__dirname, "views/public")));
 
+//* Always chek for authentication
+app.use(checkForAuthentication);
+
 //* Set EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
@@ -36,8 +39,8 @@ const staticRouter = require("./routes/staticRouter");
 const urlRoute = require("./routes/routes");
 const userRoute = require("./routes/userRoute");
 
-app.use("/url", restrictToLoggedInUserOnly, urlRoute); //* Added inline middleware to only '/url' routes
-app.use("/", checkAuth, staticRouter);
+app.use("/url", restrictTo(["NORMAL", "ADMIN"]), urlRoute); //* Restrict this route to only Normal user and Admin
+app.use("/", staticRouter);
 app.use("/user", userRoute);
 
 //* Import the MongoDB connection module and run the function
