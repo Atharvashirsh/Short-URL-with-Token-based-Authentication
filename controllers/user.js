@@ -6,11 +6,12 @@ const { setUser } = require("../service/service");
 
 //* Create user signup function that saves the user data to DB
 async function userSignup(req, res) {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
     await USER.create({
         name,
         email,
         password,
+        role,
     });
 
     return res.redirect("/");
@@ -30,4 +31,13 @@ async function userLogin(req, res) {
     return res.redirect("/");
 }
 
-module.exports = { userSignup, userLogin };
+//* Create user logout function that logs out the user and redirect it to the login page
+function userLogout(req, res) {
+    if (!req.cookies.uid) return res.redirect("/");
+
+    res.clearCookie("uid");
+
+    return res.redirect("/");
+}
+
+module.exports = { userSignup, userLogin, userLogout };
